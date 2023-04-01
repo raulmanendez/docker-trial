@@ -1,0 +1,18 @@
+docker pull mysql
+
+docker network create docker-back-end  #docker-back-end is image name
+
+docker network ls
+
+docker run --restart=always --name mysqldb --network springboot-mysql-net -e MYSQL_ROOT_PASSWORD=root -e MYSQL_DATABASE=dockerdb -d mysql
+
+docker exec -it mysqldb bash
+
+
+docker build -t springboot-restful-webservices .	
+
+(The file path . defines the location of the Dockerfile in the current directory, and the -t argument tags the resulting image, where the image name is the springboot-restful-webservices and the tag is the latest.)
+
+docker images
+
+docker run -d --restart=always --network springboot-mysql-net --name docker-backend-container -p 8080:8080 docker-back-end #docker-back-end is image name to use for container named docker-backend-container

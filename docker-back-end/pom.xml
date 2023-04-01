@@ -9,7 +9,7 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>docker</groupId>
-	<artifactId>docker_demo</artifactId>
+	<artifactId>docker_back-end</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>docker-back-end</name>
 	<description>docker demo</description>
