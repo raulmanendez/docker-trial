@@ -1,0 +1,39 @@
+services:
+  backend:
+    image: docker-back-end
+    restart: always    
+    environment:
+      - "spring.profiles.active=${SPRING_PROFILE_ACTIVE}"
+    networks:
+      - springboot-mysql-net
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - 8000:8000
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+        interval: 3s
+        retries: 5
+        start_period: 30s
+    networks:
+      - springboot-mysql-net
+    expose:
+        - 3306
+        - 33060
+  frontend:
+      image: docker-front-end
+      restart: always
+      networks:
+        - springboot-mysql-net
+      depends_on:
+        - backend
+      ports:
+        - 8001:80
+networks:
+  springboot-mysql-net: {}
