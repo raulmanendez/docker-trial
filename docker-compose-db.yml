@@ -1,0 +1,54 @@
+services:
+  backend:
+    image: raul-be
+    container_name: raul-backend
+    restart: always    
+    environment:
+      - "spring.profiles.active=prod"
+    networks:
+      - raul-network
+    volumes:
+      - /home/ubuntu/raul/backend/uploads:/app/uploads
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:4000:8080"
+  db:
+    image: mysql
+    container_name: raul-db
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: netset@123
+    healthcheck:
+        test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "--silent"]
+        interval: 3s
+        retries: 5
+        start_period: 30s
+    networks:
+      - raul-network
+    expose:
+        - 3306
+        - 33060
+  frontend:
+      image: raul-fe
+      container_name: raul-webapp
+      restart: always
+      networks:
+        - raul-network
+      depends_on:
+        - backend
+      ports:
+        - "127.0.0.1:4001:80"
+  admin:
+      image: raul-admin
+      container_name: raul-admin
+      restart: always
+      networks:
+        - raul-network
+      depends_on:
+        - backend
+      ports:
+        - "127.0.0.1:4002:80"
+networks:
+  raul-network: {}

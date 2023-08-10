@@ -1,7 +1,7 @@
 services:
   backend:
     image: docker-back-end
-    restart: always    
+    restart: no    
     environment:
       - "spring.profiles.active=${SPRING_PROFILE_ACTIVE}"
     networks:
@@ -13,7 +13,7 @@ services:
       - 8000:8000
   db:
     image: mysql
-    restart: always
+    restart: no
     environment:
       MYSQL_ROOT_PASSWORD: root
     healthcheck:
@@ -28,7 +28,7 @@ services:
         - 33060
   frontend:
       image: docker-front-end
-      restart: always
+      restart: no
       networks:
         - springboot-mysql-net
       depends_on:
