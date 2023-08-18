@@ -1,9 +1,13 @@
+version: '3'
 services:
   backend:
     image: docker-back-end
+    container_name: docker_be
     restart: no    
     environment:
       - "spring.profiles.active=${SPRING_PROFILE_ACTIVE}"
+    volumes:
+      - backend_volume:/data
     networks:
       - springboot-mysql-net
     depends_on:
@@ -13,6 +17,7 @@ services:
       - 8000:8000
   db:
     image: mysql
+    container_name: database
     restart: no
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -21,6 +26,8 @@ services:
         interval: 3s
         retries: 5
         start_period: 30s
+    volumes:
+      - mysql_volume:/var/lib/mysql
     networks:
       - springboot-mysql-net
     expose:
@@ -28,6 +35,7 @@ services:
         - 33060
   frontend:
       image: docker-front-end
+      container_name: docker_fe
       restart: no
       networks:
         - springboot-mysql-net
@@ -35,5 +43,29 @@ services:
         - backend
       ports:
         - 8001:80
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.my-router.rule=Host(`docker.myapp.com`)"
+  traefik:
+    image: traefik:v2.5
+    container_name: traefik
+    networks:
+        - springboot-mysql-net
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--api.insecure=true"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./traefik.yml:/traefik.yml
 networks:
   springboot-mysql-net: {}
+volumes:
+  backend_volume:
+  mysql_volume:

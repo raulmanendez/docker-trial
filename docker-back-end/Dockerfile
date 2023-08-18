@@ -1,4 +1,5 @@
-FROM eclipse-temurin:17
+#FROM eclipse-temurin:17
+FROM openjdk:8-jdk
 
 LABEL maintainer="muk214782@gmail.com"
 

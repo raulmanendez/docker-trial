@@ -15,7 +15,12 @@ compose
 
 docker compose up -d => in ./docker-trial
 
-GoTo => http://localhost:8001 
+GoTo => http://localhost:8001 | http://docker.myapp.com/
+
+setup fake domain by editing /etc/hosts => put entry like 127.0.0.1     docker.myapp.com
+
+traefik will search docker.myapp.com from docker compose and map it to port (here:8001)
+
 
 # docker-trial
 
