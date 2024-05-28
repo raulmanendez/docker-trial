@@ -46,6 +46,24 @@ services:
       labels:
         - "traefik.enable=true"
         - "traefik.http.routers.my-router.rule=Host(`docker.myapp.com`)"
+  wordpress:
+    depends_on:
+      - db
+    image: wordpress:latest
+    restart: always
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: root
+      WORDPRESS_DB_PASSWORD: root
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - wordpress_volume:/var/www/html
+    networks:
+      - springboot-mysql-network
+    labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.blogs.tls.certresolver=myresolver"
+        - "traefik.http.routers.blogs.rule=Host(`blogs.myapp.com`)"
   traefik:
     image: traefik:v2.5
     container_name: traefik
